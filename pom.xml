@@ -14,6 +14,9 @@
 
 	<properties>
 		<java.version>21</java.version>
+		<spotless.version>2.43.0</spotless.version>
+		<jwt.version>4.6.2</jwt.version>
+		<rest-assured.version>6.3.0</rest-assured.version>
 	</properties>
 
 	<dependencies>
@@ -56,7 +59,7 @@
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
-			<version>4.6.2</version>
+			<version>${jwt.version}</version>
 		</dependency>
 
 		<dependency>
@@ -122,7 +125,7 @@
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
-			<version>6.3.0</version>
+			<version>${rest-assured.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -166,6 +169,79 @@
 									<artifactId>lombok</artifactId>
 								</path>
 							</annotationProcessorPaths>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>${spotless.version}</version>
+				<configuration>
+					<java>
+						<palantirJavaFormat>
+							<version>2.39.0</version>
+						</palantirJavaFormat>
+
+						<removeUnusedImports />
+						<trimTrailingWhitespace />
+						<endWithNewline />
+						<lineEndings>UNIX</lineEndings>
+					</java>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>io.github.phillipuniverse</groupId>
+				<artifactId>githook-maven-plugin</artifactId>
+				<version>1.0.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>install</goal>
+						</goals>
+						<configuration>
+							<hooks>
+								<pre-commit>
+									echo "🧹 Checking code format..."
+									./mvnw spotless:check
+
+									if [ $? -ne 0 ]; then
+									echo "🛑 ERROR: Code format issues found!"
+									echo "👉 Run './mvnw spotless:apply' to automatically fix formatting, then 'git add .' and commit again."
+									exit 1
+									fi
+
+									echo "⏳ Running local tests before commit..."
+									./mvnw clean test
+
+									if [ $? -ne 0 ]; then
+									echo "❌ Tests failed! Commit aborted. Please fix the code and try again."
+									exit 1
+									fi
+									echo "✅ Code formatted and tests passed!"
+								</pre-commit>
+
+								<commit-msg>
+									echo "🔎 Validating Conventional Commits standard..."
+									COMMIT_MSG_FILE=$1
+									COMMIT_MSG=$(cat $COMMIT_MSG_FILE)
+
+									# Pattern: type(scope): message or type: message
+									PATTERN="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-zA-Z0-9_-]+\))?(!)?: .+"
+
+									if [[ ! $COMMIT_MSG =~ $PATTERN ]]; then
+									echo "🛑 ERROR: Invalid commit message format!"
+									echo "Your message: '$COMMIT_MSG'"
+									echo "👉 Use the format: type(optional-scope): short description"
+									echo "✅ Example: feat(expense): add integrated test for expenses"
+									echo "✅ Example: fix: correct balance calculation error"
+									exit 1
+									fi
+									echo "✅ Commit message approved!"
+								</commit-msg>
+							</hooks>
 						</configuration>
 					</execution>
 				</executions>

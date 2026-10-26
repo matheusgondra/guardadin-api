@@ -1,14 +1,9 @@
 package com.matheusgondra.guardadin.exception.dto;
 
+import java.time.OffsetDateTime;
 import org.springframework.http.HttpStatus;
 
-import java.time.OffsetDateTime;
-
-public record ErrorResponse(
-        String message,
-        int statusCode,
-        OffsetDateTime timestamp
-) {
+public record ErrorResponse(String message, int statusCode, OffsetDateTime timestamp) {
     public ErrorResponse(String message, HttpStatus status) {
         this(message, status.value(), OffsetDateTime.now());
     }

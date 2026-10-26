@@ -1,5 +1,10 @@
 package com.matheusgondra.guardadin.expense.controller;
 
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+
 import com.matheusgondra.guardadin.BaseIntegrationTest;
 import com.matheusgondra.guardadin.category.entity.CategoryType;
 import com.matheusgondra.guardadin.cryptography.service.TokenService;
@@ -9,6 +14,8 @@ import com.matheusgondra.guardadin.expense.respository.ExpenseRepository;
 import com.matheusgondra.guardadin.user.entity.User;
 import com.matheusgondra.guardadin.user.repository.UserRepository;
 import io.restassured.http.ContentType;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,15 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-
 
 class AddExpenseControllerTest extends BaseIntegrationTest {
     private final String path = "/api/v1/expense";
@@ -69,19 +67,14 @@ class AddExpenseControllerTest extends BaseIntegrationTest {
     @Test
     void shouldReturn201OnSuccess() {
         var dto = new AddExpenseRequestDTO(
-                "test title",
-                new BigDecimal("100.12"),
-                LocalDate.now(),
-                CategoryType.EDUCATION
-        );
+                "test title", new BigDecimal("100.12"), LocalDate.now(), CategoryType.EDUCATION);
 
-        given()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+        given().header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(ContentType.JSON)
                 .body(dto)
-        .when()
+                .when()
                 .post(path)
-        .then()
+                .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("id", notNullValue())
                 .body("title", equalTo(dto.title()))
@@ -94,18 +87,13 @@ class AddExpenseControllerTest extends BaseIntegrationTest {
     @Test
     void shouldReturn401WhenTokenIsMissingOrInvalid() {
         var dto = new AddExpenseRequestDTO(
-                "Tentativa de Invasão",
-                new BigDecimal("100.00"),
-                LocalDate.now(),
-                CategoryType.FOOD
-        );
+                "Tentativa de Invasão", new BigDecimal("100.00"), LocalDate.now(), CategoryType.FOOD);
 
-        ErrorResponse errorResponse = given()
-                .contentType(ContentType.JSON)
+        ErrorResponse errorResponse = given().contentType(ContentType.JSON)
                 .body(dto)
-        .when()
+                .when()
                 .post(path)
-        .then()
+                .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .extract()
                 .as(ErrorResponse.class);
@@ -117,21 +105,15 @@ class AddExpenseControllerTest extends BaseIntegrationTest {
 
     @Test
     void shouldReturn400WhenPayloadIsInvalid() {
-        var invalidDto = new AddExpenseRequestDTO(
-                "",
-                new BigDecimal("-50.00"),
-                null,
-                null
-        );
+        var invalidDto = new AddExpenseRequestDTO("", new BigDecimal("-50.00"), null, null);
 
-        given()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+        given().header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(HttpHeaders.ACCEPT_LANGUAGE, "en-US")
                 .contentType(ContentType.JSON)
                 .body(invalidDto)
-        .when()
+                .when()
                 .post(path)
-        .then()
+                .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message", equalTo("Validation failed"))
                 .body("errors.size()", equalTo(4));

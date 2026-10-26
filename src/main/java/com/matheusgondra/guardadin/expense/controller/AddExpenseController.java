@@ -25,16 +25,9 @@ public class AddExpenseController {
 
     @PostMapping
     public ResponseEntity<ExpenseDetails> handle(
-            @RequestBody @Valid AddExpenseRequestDTO dto,
-            @AuthenticationPrincipal User user
-    ) {
-        AddExpenseParam param = new AddExpenseParam(
-                user.getId(),
-                dto.title(),
-                dto.amount(),
-                dto.date(),
-                dto.category()
-        );
+            @RequestBody @Valid AddExpenseRequestDTO dto, @AuthenticationPrincipal User user) {
+        AddExpenseParam param =
+                new AddExpenseParam(user.getId(), dto.title(), dto.amount(), dto.date(), dto.category());
 
         log.debug("param: {}", param);
 
