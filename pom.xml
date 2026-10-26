@@ -17,6 +17,7 @@
 		<spotless.version>2.43.0</spotless.version>
 		<jwt.version>4.6.2</jwt.version>
 		<rest-assured.version>6.3.0</rest-assured.version>
+		<scalar.version>3.2.0</scalar.version>
 	</properties>
 
 	<dependencies>
@@ -52,8 +53,8 @@
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>3.1.0</version>
+			<artifactId>springdoc-openapi-starter-webmvc-scalar</artifactId>
+			<version>${scalar.version}</version>
 		</dependency>
 
 		<dependency>
