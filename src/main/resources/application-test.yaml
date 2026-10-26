@@ -1,0 +1,7 @@
+api:
+  jwt:
+    secret: testSecret
+
+logging:
+  level:
+    root: WARN
