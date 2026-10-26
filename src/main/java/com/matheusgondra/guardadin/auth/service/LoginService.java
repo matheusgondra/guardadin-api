@@ -20,7 +20,8 @@ public class LoginService implements LoginUseCase {
     @Override
     public String execute(LoginParam param) {
         try {
-            Authentication authenticationToken = new UsernamePasswordAuthenticationToken(param.email(), param.password());
+            Authentication authenticationToken =
+                    new UsernamePasswordAuthenticationToken(param.email(), param.password());
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
             User user = (User) authentication.getPrincipal();

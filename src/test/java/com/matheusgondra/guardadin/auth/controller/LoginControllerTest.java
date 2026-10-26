@@ -1,5 +1,9 @@
 package com.matheusgondra.guardadin.auth.controller;
 
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
 import com.matheusgondra.guardadin.BaseIntegrationTest;
 import com.matheusgondra.guardadin.auth.usecase.LoginParam;
 import com.matheusgondra.guardadin.exception.dto.ErrorResponse;
@@ -12,10 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
 
 class LoginControllerTest extends BaseIntegrationTest {
     private final String path = "/api/v1/auth/login";
@@ -51,8 +51,7 @@ class LoginControllerTest extends BaseIntegrationTest {
     void shouldReturn200AndTokenOnSuccess() {
         LoginParam credentials = new LoginParam(userEmail, rawPassword);
 
-        given()
-                .contentType(ContentType.JSON)
+        given().contentType(ContentType.JSON)
                 .body(credentials)
                 .when()
                 .post(path)
@@ -65,8 +64,7 @@ class LoginControllerTest extends BaseIntegrationTest {
     void shouldReturn401WhenPasswordIsIncorrect() {
         LoginParam wrongCredentials = new LoginParam(userEmail, "WrongPassword");
 
-        ErrorResponse errorResponse = given()
-                .contentType(ContentType.JSON)
+        ErrorResponse errorResponse = given().contentType(ContentType.JSON)
                 .body(wrongCredentials)
                 .when()
                 .post(path)
@@ -84,8 +82,7 @@ class LoginControllerTest extends BaseIntegrationTest {
     void shouldReturn401WhenEmailDoesNotExist() {
         LoginParam wrongCredentials = new LoginParam("ghost@email.com", rawPassword);
 
-        ErrorResponse errorResponse = given()
-                .contentType(ContentType.JSON)
+        ErrorResponse errorResponse = given().contentType(ContentType.JSON)
                 .body(wrongCredentials)
                 .when()
                 .post(path)

@@ -26,8 +26,7 @@ public class ListExpensesController {
     @GetMapping
     public ResponseEntity<PagedModel<ExpenseDetails>> handle(
             @AuthenticationPrincipal User user,
-            @PageableDefault(size = 20, sort = "date", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
+            @PageableDefault(size = 20, sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<ExpenseDetails> result = useCase.execute(user.getId(), pageable);
 
         log.debug("Page: {}", result);

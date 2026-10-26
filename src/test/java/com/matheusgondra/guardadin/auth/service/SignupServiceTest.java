@@ -1,22 +1,5 @@
 package com.matheusgondra.guardadin.auth.service;
 
-import com.matheusgondra.guardadin.auth.dto.UserDetails;
-import com.matheusgondra.guardadin.auth.usecase.SignupParam;
-import com.matheusgondra.guardadin.cryptography.service.HashService;
-import com.matheusgondra.guardadin.user.entity.User;
-import com.matheusgondra.guardadin.user.exception.UserAlreadyExistsException;
-import com.matheusgondra.guardadin.user.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -24,6 +7,22 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import com.matheusgondra.guardadin.auth.dto.UserDetails;
+import com.matheusgondra.guardadin.auth.usecase.SignupParam;
+import com.matheusgondra.guardadin.cryptography.service.HashService;
+import com.matheusgondra.guardadin.user.entity.User;
+import com.matheusgondra.guardadin.user.exception.UserAlreadyExistsException;
+import com.matheusgondra.guardadin.user.repository.UserRepository;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class SignupServiceTest {
@@ -91,8 +90,8 @@ class SignupServiceTest {
     void shouldReturnRegisterUserResponseOnSuccess() {
         UserDetails response = sut.execute(signupParam);
 
-        UserDetails expected = new UserDetails(
-                userIdMock, "anyFirstName", "anyLastName", "any.email@example.com", fixedNow, fixedNow);
+        UserDetails expected =
+                new UserDetails(userIdMock, "anyFirstName", "anyLastName", "any.email@example.com", fixedNow, fixedNow);
 
         assertEquals(expected, response);
     }

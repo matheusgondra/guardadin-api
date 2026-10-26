@@ -38,7 +38,6 @@ public class SignupService implements SignupUseCase {
                 userCreated.getLastName(),
                 userCreated.getEmail(),
                 userCreated.getCreatedAt(),
-                userCreated.getUpdatedAt()
-        );
+                userCreated.getUpdatedAt());
     }
 }

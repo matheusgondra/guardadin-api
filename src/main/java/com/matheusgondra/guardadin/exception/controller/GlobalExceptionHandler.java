@@ -4,6 +4,7 @@ import com.matheusgondra.guardadin.auth.exception.InvalidCredentialsException;
 import com.matheusgondra.guardadin.exception.dto.ErrorResponse;
 import com.matheusgondra.guardadin.exception.dto.ValidationErrorResponse;
 import com.matheusgondra.guardadin.user.exception.UserAlreadyExistsException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
@@ -39,20 +38,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
 
-        List<ValidationErrorResponse.FieldErrorDetails> fieldErrors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> new ValidationErrorResponse.FieldErrorDetails(
-                        error.getField(),
-                        error.getDefaultMessage()
-                ))
+        List<ValidationErrorResponse.FieldErrorDetails> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
+                .map(error ->
+                        new ValidationErrorResponse.FieldErrorDetails(error.getField(), error.getDefaultMessage()))
                 .toList();
 
-        var error = new ValidationErrorResponse(
-                "Validation failed",
-                HttpStatus.BAD_REQUEST,
-                fieldErrors
-        );
+        var error = new ValidationErrorResponse("Validation failed", HttpStatus.BAD_REQUEST, fieldErrors);
 
         return ResponseEntity.badRequest().body(error);
     }

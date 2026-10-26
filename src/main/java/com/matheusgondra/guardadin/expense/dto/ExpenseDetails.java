@@ -1,7 +1,6 @@
 package com.matheusgondra.guardadin.expense.dto;
 
 import com.matheusgondra.guardadin.category.entity.CategoryType;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +13,4 @@ public record ExpenseDetails(
         LocalDate date,
         CategoryType category,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
-) {
-}
+        LocalDateTime updatedAt) {}

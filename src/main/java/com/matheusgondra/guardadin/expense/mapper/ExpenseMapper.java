@@ -12,7 +12,6 @@ public class ExpenseMapper {
                 entity.getDate(),
                 entity.getCategory().getName(),
                 entity.getCreatedAt(),
-                entity.getUpdatedAt()
-        );
+                entity.getUpdatedAt());
     }
 }

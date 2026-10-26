@@ -1,5 +1,13 @@
 package com.matheusgondra.guardadin.expense.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.matheusgondra.guardadin.category.entity.Category;
 import com.matheusgondra.guardadin.category.entity.CategoryType;
 import com.matheusgondra.guardadin.category.exception.CategoryNotFoundException;
@@ -11,6 +19,11 @@ import com.matheusgondra.guardadin.expense.usecase.AddExpenseParam;
 import com.matheusgondra.guardadin.user.entity.User;
 import com.matheusgondra.guardadin.user.exception.UserNotFoundException;
 import com.matheusgondra.guardadin.user.repository.UserRepository;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,36 +31,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-
 @ExtendWith(MockitoExtension.class)
 class AddExpenseServiceTest {
     private final UUID userId = UUID.randomUUID();
     private final AddExpenseParam param = new AddExpenseParam(
-            userId,
-            "test title",
-            new BigDecimal("100.20"),
-            LocalDate.now(),
-            CategoryType.EDUCATION
-    );
+            userId, "test title", new BigDecimal("100.20"), LocalDate.now(), CategoryType.EDUCATION);
     private final User userMock = User.builder().id(userId).build();
-    private final Category categoryMock = Category.builder()
-            .id(1)
-            .name(CategoryType.EDUCATION)
-            .build();
+    private final Category categoryMock =
+            Category.builder().id(1).name(CategoryType.EDUCATION).build();
     private final Expense expenseMock = Expense.builder()
             .id(UUID.randomUUID())
             .title(param.title())
@@ -71,10 +62,8 @@ class AddExpenseServiceTest {
     @Mock
     private ExpenseRepository expenseRepository;
 
-
     @BeforeEach
     void setUp() {
-
 
         lenient().when(userRepository.findById(userId)).thenReturn(Optional.of(userMock));
         lenient().when(categoryRepository.findByName(CategoryType.EDUCATION)).thenReturn(Optional.of(categoryMock));
@@ -120,7 +109,6 @@ class AddExpenseServiceTest {
                 .user(userMock)
                 .category(categoryMock)
                 .build();
-
 
         verify(expenseRepository).save(expected);
     }

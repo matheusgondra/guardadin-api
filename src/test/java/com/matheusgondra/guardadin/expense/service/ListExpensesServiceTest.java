@@ -1,11 +1,20 @@
 package com.matheusgondra.guardadin.expense.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.matheusgondra.guardadin.category.entity.Category;
 import com.matheusgondra.guardadin.category.entity.CategoryType;
 import com.matheusgondra.guardadin.expense.dto.ExpenseDetails;
 import com.matheusgondra.guardadin.expense.entity.Expense;
 import com.matheusgondra.guardadin.expense.respository.ExpenseRepository;
 import com.matheusgondra.guardadin.user.entity.User;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,16 +24,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ListExpensesServiceTest {

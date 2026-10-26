@@ -25,11 +25,9 @@ public class AddExpenseService implements AddExpenseUseCase {
     @Transactional
     @Override
     public ExpenseDetails execute(AddExpenseParam param) {
-        User user = userRepository.findById(param.userId())
-                .orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(param.userId()).orElseThrow(UserNotFoundException::new);
 
-        Category category = categoryRepository.findByName(param.category())
-                .orElseThrow(CategoryNotFoundException::new);
+        Category category = categoryRepository.findByName(param.category()).orElseThrow(CategoryNotFoundException::new);
 
         Expense expense = Expense.builder()
                 .title(param.title())
@@ -41,13 +39,12 @@ public class AddExpenseService implements AddExpenseUseCase {
         Expense createdExpense = expenseRepository.save(expense);
 
         return new ExpenseDetails(
-            createdExpense.getId(),
-            createdExpense.getTitle(),
-            createdExpense.getAmount(),
-            createdExpense.getDate(),
-            createdExpense.getCategory().getName(),
-            createdExpense.getCreatedAt(),
-            createdExpense.getUpdatedAt()
-        );
+                createdExpense.getId(),
+                createdExpense.getTitle(),
+                createdExpense.getAmount(),
+                createdExpense.getDate(),
+                createdExpense.getCategory().getName(),
+                createdExpense.getCreatedAt(),
+                createdExpense.getUpdatedAt());
     }
 }
