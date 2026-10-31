@@ -1,5 +1,7 @@
 package com.matheusgondra.guardadin.expense.controller;
 
+import com.matheusgondra.guardadin.doc.annotation.ApiExpenseTag;
+import com.matheusgondra.guardadin.expense.controller.doc.ListExpensesControllerDoc;
 import com.matheusgondra.guardadin.expense.dto.ExpenseDetails;
 import com.matheusgondra.guardadin.expense.usecase.ListExpensesUseCase;
 import com.matheusgondra.guardadin.user.entity.User;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@ApiExpenseTag
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ListExpensesController {
     private final ListExpensesUseCase useCase;
 
+    @ListExpensesControllerDoc
     @GetMapping
     public ResponseEntity<PagedModel<ExpenseDetails>> handle(
             @AuthenticationPrincipal User user,
