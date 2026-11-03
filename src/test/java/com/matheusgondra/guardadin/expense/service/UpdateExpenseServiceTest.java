@@ -79,4 +79,11 @@ class UpdateExpenseServiceTest {
         assertEquals(expense.getTitle(), param.title());
         assertEquals(expense.getCategory().getName(), param.category());
     }
+
+    @Test
+    void shouldCallSaveOnExpenseRepository() {
+        sut.execute(param);
+
+        verify(expenseRepository).save(expense);
+    }
 }
