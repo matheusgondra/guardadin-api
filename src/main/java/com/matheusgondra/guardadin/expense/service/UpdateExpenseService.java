@@ -6,6 +6,7 @@ import com.matheusgondra.guardadin.category.repository.CategoryRepository;
 import com.matheusgondra.guardadin.expense.dto.ExpenseDetails;
 import com.matheusgondra.guardadin.expense.entity.Expense;
 import com.matheusgondra.guardadin.expense.exception.ExpenseNotFoundException;
+import com.matheusgondra.guardadin.expense.mapper.ExpenseMapper;
 import com.matheusgondra.guardadin.expense.respository.ExpenseRepository;
 import com.matheusgondra.guardadin.expense.usecase.UpdateExpenseParam;
 import com.matheusgondra.guardadin.expense.usecase.UpdateExpenseUseCase;
@@ -28,9 +29,9 @@ public class UpdateExpenseService implements UpdateExpenseUseCase {
 
         this.updateExpense(expense, param);
 
-        repository.save(expense);
+        Expense expenseUpdated = repository.save(expense);
 
-        return null;
+        return ExpenseMapper.toDetails(expenseUpdated);
     }
 
     private void updateExpense(Expense expense, UpdateExpenseParam param) {
