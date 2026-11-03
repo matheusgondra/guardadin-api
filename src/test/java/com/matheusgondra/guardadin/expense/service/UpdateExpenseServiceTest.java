@@ -9,11 +9,14 @@ import static org.mockito.Mockito.when;
 import com.matheusgondra.guardadin.category.entity.Category;
 import com.matheusgondra.guardadin.category.entity.CategoryType;
 import com.matheusgondra.guardadin.category.repository.CategoryRepository;
+import com.matheusgondra.guardadin.expense.dto.ExpenseDetails;
 import com.matheusgondra.guardadin.expense.entity.Expense;
 import com.matheusgondra.guardadin.expense.exception.ExpenseNotFoundException;
 import com.matheusgondra.guardadin.expense.respository.ExpenseRepository;
 import com.matheusgondra.guardadin.expense.usecase.UpdateExpenseParam;
 import com.matheusgondra.guardadin.user.entity.User;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,11 +48,20 @@ class UpdateExpenseServiceTest {
     @BeforeEach
     void setUp() {
         Category category = Category.builder().name(CategoryType.FOOD).build();
-        expense = Expense.builder().id(id).user(user).category(category).build();
+        expense = Expense.builder()
+                .id(id)
+                .user(user)
+                .category(category)
+                .title("title")
+                .date(LocalDate.now())
+                .amount(new BigDecimal("100.50"))
+                .build();
 
         lenient()
                 .when(expenseRepository.findByIdAndUser(param.id(), param.user()))
                 .thenReturn(Optional.of(expense));
+
+        lenient().when(expenseRepository.save(expense)).thenReturn(expense);
 
         lenient()
                 .when(categoryRepository.findByName(CategoryType.TRANSPORT))
@@ -85,5 +97,15 @@ class UpdateExpenseServiceTest {
         sut.execute(param);
 
         verify(expenseRepository).save(expense);
+    }
+
+    @Test
+    void shouldReturnExpenseDetailsUpdated() {
+        ExpenseDetails result = sut.execute(param);
+
+        assertEquals(expense.getTitle(), result.title());
+        assertEquals(expense.getCategory().getName(), result.category());
+        assertEquals(expense.getAmount(), result.amount());
+        assertEquals(expense.getDate(), result.date());
     }
 }
