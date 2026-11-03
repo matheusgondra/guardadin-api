@@ -28,6 +28,8 @@ public class UpdateExpenseService implements UpdateExpenseUseCase {
 
         this.updateExpense(expense, param);
 
+        repository.save(expense);
+
         return null;
     }
 
