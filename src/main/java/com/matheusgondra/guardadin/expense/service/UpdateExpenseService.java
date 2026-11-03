@@ -1,6 +1,7 @@
 package com.matheusgondra.guardadin.expense.service;
 
 import com.matheusgondra.guardadin.expense.dto.ExpenseDetails;
+import com.matheusgondra.guardadin.expense.exception.ExpenseNotFoundException;
 import com.matheusgondra.guardadin.expense.respository.ExpenseRepository;
 import com.matheusgondra.guardadin.expense.usecase.UpdateExpenseParam;
 import com.matheusgondra.guardadin.expense.usecase.UpdateExpenseUseCase;
@@ -14,7 +15,7 @@ public class UpdateExpenseService implements UpdateExpenseUseCase {
 
     @Override
     public ExpenseDetails execute(UpdateExpenseParam param) {
-        repository.findByIdAndUser(param.id(), param.user());
+        repository.findByIdAndUser(param.id(), param.user()).orElseThrow(ExpenseNotFoundException::new);
 
         return null;
     }
