@@ -1,6 +1,8 @@
 package com.matheusgondra.guardadin.expense.respository;
 
 import com.matheusgondra.guardadin.expense.entity.Expense;
+import com.matheusgondra.guardadin.user.entity.User;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,4 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
     @EntityGraph(attributePaths = {"category"})
     Page<Expense> findAllByUserId(UUID userId, Pageable pageable);
+
+    Optional<Expense> findByIdAndUser(UUID id, User user);
 }
