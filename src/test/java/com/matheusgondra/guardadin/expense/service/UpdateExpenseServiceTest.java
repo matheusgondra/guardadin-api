@@ -1,10 +1,14 @@
 package com.matheusgondra.guardadin.expense.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.matheusgondra.guardadin.category.entity.Category;
+import com.matheusgondra.guardadin.category.entity.CategoryType;
+import com.matheusgondra.guardadin.category.repository.CategoryRepository;
 import com.matheusgondra.guardadin.expense.entity.Expense;
 import com.matheusgondra.guardadin.expense.exception.ExpenseNotFoundException;
 import com.matheusgondra.guardadin.expense.respository.ExpenseRepository;
@@ -24,7 +28,10 @@ class UpdateExpenseServiceTest {
     private final UUID id = UUID.randomUUID();
     private final UUID userId = UUID.randomUUID();
     private final User user = User.builder().id(userId).build();
-    private final UpdateExpenseParam param = new UpdateExpenseParam(id, user, "title test", null, null);
+    private final UpdateExpenseParam param =
+            new UpdateExpenseParam(id, user, "title test", null, null, CategoryType.TRANSPORT);
+
+    private Expense expense;
 
     @InjectMocks
     private UpdateExpenseService sut;
@@ -32,11 +39,22 @@ class UpdateExpenseServiceTest {
     @Mock
     private ExpenseRepository expenseRepository;
 
+    @Mock
+    private CategoryRepository categoryRepository;
+
     @BeforeEach
     void setUp() {
+        Category category = Category.builder().name(CategoryType.FOOD).build();
+        expense = Expense.builder().id(id).user(user).category(category).build();
+
         lenient()
                 .when(expenseRepository.findByIdAndUser(param.id(), param.user()))
-                .thenReturn(Optional.of(Expense.builder().id(id).user(user).build()));
+                .thenReturn(Optional.of(expense));
+
+        lenient()
+                .when(categoryRepository.findByName(CategoryType.TRANSPORT))
+                .thenReturn(Optional.of(
+                        Category.builder().name(CategoryType.TRANSPORT).build()));
     }
 
     @Test
@@ -51,5 +69,14 @@ class UpdateExpenseServiceTest {
         when(expenseRepository.findByIdAndUser(param.id(), param.user())).thenReturn(Optional.empty());
 
         assertThrows(ExpenseNotFoundException.class, () -> sut.execute(param));
+    }
+
+    @Test
+    void shouldUpdateExpenseWithNoNullValues() {
+        sut.execute(param);
+
+        verify(categoryRepository).findByName(CategoryType.TRANSPORT);
+        assertEquals(expense.getTitle(), param.title());
+        assertEquals(expense.getCategory().getName(), param.category());
     }
 }
