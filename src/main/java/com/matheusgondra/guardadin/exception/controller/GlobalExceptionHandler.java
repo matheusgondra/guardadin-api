@@ -1,9 +1,12 @@
 package com.matheusgondra.guardadin.exception.controller;
 
 import com.matheusgondra.guardadin.auth.exception.InvalidCredentialsException;
+import com.matheusgondra.guardadin.category.exception.CategoryNotFoundException;
 import com.matheusgondra.guardadin.exception.dto.ErrorResponse;
 import com.matheusgondra.guardadin.exception.dto.ValidationErrorResponse;
+import com.matheusgondra.guardadin.expense.exception.ExpenseNotFoundException;
 import com.matheusgondra.guardadin.user.exception.UserAlreadyExistsException;
+import com.matheusgondra.guardadin.user.exception.UserNotFoundException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,15 @@ public class GlobalExceptionHandler {
         log.error("Conflict: {}", errorResponse);
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler({ExpenseNotFoundException.class, UserNotFoundException.class, CategoryNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException ex) {
+        ErrorResponse errorResponse = ErrorResponse.notFound(ex);
+
+        log.error("NotFound: {}", errorResponse);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
