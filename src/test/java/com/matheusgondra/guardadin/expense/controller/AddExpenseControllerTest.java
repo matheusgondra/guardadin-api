@@ -7,12 +7,9 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import com.matheusgondra.guardadin.BaseIntegrationTest;
 import com.matheusgondra.guardadin.category.entity.CategoryType;
-import com.matheusgondra.guardadin.cryptography.service.TokenService;
 import com.matheusgondra.guardadin.exception.dto.ErrorResponse;
 import com.matheusgondra.guardadin.expense.dto.AddExpenseRequestDTO;
 import com.matheusgondra.guardadin.expense.respository.ExpenseRepository;
-import com.matheusgondra.guardadin.user.entity.User;
-import com.matheusgondra.guardadin.user.repository.UserRepository;
 import io.restassured.http.ContentType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,46 +19,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 class AddExpenseControllerTest extends BaseIntegrationTest {
     private final String path = "/api/v1/expense";
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ExpenseRepository expenseRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private TokenService tokenService;
-
-    private String token;
-    private User loggedUser;
 
     @BeforeEach
     void setUp() {
         expenseRepository.deleteAll();
-        userRepository.deleteAll();
-
-        loggedUser = User.builder()
-                .firstName("Fulano")
-                .lastName("Silva")
-                .email("fulano.silve@gmail.com")
-                .password(passwordEncoder.encode("Password@123"))
-                .build();
-        userRepository.save(loggedUser);
-
-        token = tokenService.generateToken(loggedUser.getId().toString());
     }
 
     @AfterEach
     void tearDown() {
         expenseRepository.deleteAll();
-        userRepository.deleteAll();
     }
 
     @Test
@@ -69,7 +41,7 @@ class AddExpenseControllerTest extends BaseIntegrationTest {
         var dto = new AddExpenseRequestDTO(
                 "test title", new BigDecimal("100.12"), LocalDate.now(), CategoryType.EDUCATION);
 
-        given().header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+        given().header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(ContentType.JSON)
                 .body(dto)
                 .when()
@@ -107,7 +79,7 @@ class AddExpenseControllerTest extends BaseIntegrationTest {
     void shouldReturn400WhenPayloadIsInvalid() {
         var invalidDto = new AddExpenseRequestDTO("", new BigDecimal("-50.00"), null, null);
 
-        given().header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+        given().header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .header(HttpHeaders.ACCEPT_LANGUAGE, "en-US")
                 .contentType(ContentType.JSON)
                 .body(invalidDto)
