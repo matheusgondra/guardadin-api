@@ -1,0 +1,24 @@
+# Diretórios de build e dependências locais
+target/
+.mvn/wrapper/maven-wrapper.properties
+.gradle/
+build/
+
+# Configurações de IDE e arquivos de sistema
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+.DS_Store
+Thumbs.db
+
+# Controle de versão
+.git/
+.gitignore
+
+# Documentação, testes locais e arquivos markdown
+README.md
+docs/
+*.log
