@@ -86,4 +86,20 @@ class UpdateExpenseControllerTest extends BaseIntegrationTest {
         assertThat(errorResponse.message()).isEqualTo("Expense not found");
         assertThat(errorResponse.timestamp()).isNotNull();
     }
+
+    @Test
+    void shouldReturn401WhenTokenIsMissingOrInvalid() {
+        ErrorResponse errorResponse = given().contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .put(path, expense.getId().toString())
+                .then()
+                .statusCode(401)
+                .extract()
+                .as(ErrorResponse.class);
+
+        assertThat(errorResponse.statusCode()).isEqualTo(401);
+        assertThat(errorResponse.message()).isEqualTo("Unauthorized");
+        assertThat(errorResponse.timestamp()).isNotNull();
+    }
 }
