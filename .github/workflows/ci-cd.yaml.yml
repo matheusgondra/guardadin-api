@@ -1,0 +1,36 @@
+name: ci-cd.yaml
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    name: Build, Format and Test
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Grant execute permission for mvnw
+        run: chmod +x mvnw
+
+      - name: Check code formatting (Spotless)
+        run: ./mvnw spotless:check
+
+      - name: Run tests with testcontainers
+        run: ./mvnw clean test
