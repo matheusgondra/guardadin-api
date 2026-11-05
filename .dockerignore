@@ -1,6 +1,5 @@
 # Diretórios de build e dependências locais
 target/
-.mvn/wrapper/maven-wrapper.properties
 .gradle/
 build/
 

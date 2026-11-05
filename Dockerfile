@@ -9,7 +9,7 @@ RUN chmod +x mvnw && ./mvnw dependency:go-offline
 
 COPY src/ src/
 
-RUN ./mvnw package -DskipTests
+RUN ./mvnw package -DskipTests -Dgithook.plugin.skip=true
 
 FROM eclipse-temurin:21-jre-jammy AS runtime
 
