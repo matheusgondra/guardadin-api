@@ -33,6 +33,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(openApiPaths)
                         .permitAll()
+                        .requestMatchers("/actuator/health", "/actuator/metrics/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
